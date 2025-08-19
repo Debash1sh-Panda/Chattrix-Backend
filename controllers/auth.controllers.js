@@ -133,26 +133,26 @@ exports.verifyOtpForEmailVerification = async (req, res) => {
 
 exports.signUp = async (req, res) => {
   try {
-    const { data } = req.body;
-    const decryptedBytes = CryptoJS.AES.decrypt(
-      data,
-      process.env.DECRYPT_SECRET_KEY
-    );
-    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    // const { data } = req.body;
+    // const decryptedBytes = CryptoJS.AES.decrypt(
+    //   data,
+    //   process.env.DECRYPT_SECRET_KEY
+    // );
+    // const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
-    if (!decryptedText) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or tampered encrypted data.",
-      });
-    }
+    // if (!decryptedText) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Invalid or tampered encrypted data.",
+    //   });
+    // }
 
-    const decryptedPayload = JSON.parse(decryptedText);
+    // const decryptedPayload = JSON.parse(decryptedText);
 
-    const { firstname, lastname, email, phone, password } = decryptedPayload;
+    const { fullname, email, phone, password } = req.body;
 
     // console.log("decryptedPayload", decryptedPayload)
-    if (!(firstname && email && phone && password)) {
+    if (!(fullname && email && phone && password)) {
       return res.status(400).json({
         success: false,
         message: "All mandatory fields are required, except lastname",
@@ -171,8 +171,7 @@ exports.signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new userModel({
-      firstname: firstname?.trim(),
-      lastname: lastname?.trim() || "",
+      fullname: fullname?.trim(),
       email: email?.trim(),
       phone: phone,
       password: hashedPassword,
@@ -186,7 +185,7 @@ exports.signUp = async (req, res) => {
 
     await logActivity(
       newUser._id,
-      `A new user (${newUser.companyname}) registered at ${new Date.now()}`
+      `A new user (${newUser.fullname}) registered successfully.`
     );
 
     //sending email to user after registration
@@ -197,8 +196,7 @@ exports.signUp = async (req, res) => {
       success: true,
       message: "Hay! Welcome to Chattrix 🎉",
       user: {
-        firstname: newUser.firstname,
-        lastname: newUser.lastname,
+        fullname: newUser.fullname,
         email: newUser.email,
         phone: newUser.phone,
         country_code: newUser.country_code,

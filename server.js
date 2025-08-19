@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const dbConnection = require("./config/database.config");
 const setupRoutes = require("./routes/main.mount.routes");
 const chattrix = express();
+const baseUrl = process.env.BASE_URI
 
 // cors policy
 const allowedOrigins = [
@@ -52,4 +53,4 @@ chattrix.listen(process.env.PORT || 2020, () =>
   console.log(`Yahh 🤠, Server is runnig on PORT: ${process.env.PORT || 2020}`)
 );
 
-chattrix.get("/", (req, res) => res.send("Hay 👋🏻, I am Chattrix Server!"));
+chattrix.get(`${baseUrl}`, (req, res) => res.send("Hay 👋🏻, I am Chattrix Server!"));

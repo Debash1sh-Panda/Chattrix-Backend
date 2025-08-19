@@ -21,16 +21,16 @@ const userSchema = new mongoose.Schema(
     country_code: String,
     password: String,
     profile_image: String,
-    firstname: String,
-    lastname: {
-      type: String,
-      default: "",
-    },
+    fullname: String,
     bio: String,
     pronouns: String,
     location: String,
     social_accounts: String,
     isActive: Boolean,
+    isRememberMe: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
